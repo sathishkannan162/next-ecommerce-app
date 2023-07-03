@@ -4,6 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "./prisma";
 
+// TODO: change authentication to use JWT, you don't need a database for persisting user session saving on cost.
+
 if (
   process.env.GITHUB_CLIENT_ID === undefined ||
   process.env.GITHUB_CLIENT_SECRET === undefined ||
