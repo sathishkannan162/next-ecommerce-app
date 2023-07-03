@@ -14,6 +14,14 @@ import SearchBar from "./SearchBar";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
+// export const truncateFirstName = (name: string, maxLength: number) => {
+// const firstName = name.split(" ")[0];
+// if (firstName.length > maxLength) {
+// return firstName.slice(0, maxLength).concat("...");
+// }
+// return firstName;
+// };
+
 const Navbar = () => {
   const { data: session } = useSession();
   return (
@@ -25,20 +33,24 @@ const Navbar = () => {
       </Link>
       <SearchBar />
       <div className="flex flex-row">
-        <MenubarMenu>
-          <MenubarTrigger>
-            {session ? (
-              <button onClick={() => signOut()}>Signout</button>
-            ) : (
-              <Link href="/login">Login</Link>
-            )}
-          </MenubarTrigger>
-        </MenubarMenu>
+        {session ? (
+          <></>
+        ) : (
+          <MenubarMenu>
+            <MenubarTrigger>Sign In</MenubarTrigger>
+          </MenubarMenu>
+        )}
         <MenubarMenu>
           <MenubarTrigger>Account</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>Profile</MenubarItem>
-            <MenubarItem>Orders</MenubarItem>
+            <MenubarItem>Your Orders</MenubarItem>
+            {session ? (
+              <MenubarItem>
+                <button onClick={() => signOut()}>Sign Out</button>
+              </MenubarItem>
+            ) : (
+              <></>
+            )}
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
