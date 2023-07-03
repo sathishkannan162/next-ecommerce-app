@@ -12,18 +12,10 @@ import Logo from "./assets/elona_1.png";
 import { FaShoppingCart } from "react-icons/fa";
 import SearchBar from "./SearchBar";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-
-// export const truncateFirstName = (name: string, maxLength: number) => {
-// const firstName = name.split(" ")[0];
-// if (firstName.length > maxLength) {
-// return firstName.slice(0, maxLength).concat("...");
-// }
-// return firstName;
-// };
+import SignInMenuTrigger from "./SignInMenuTrigger";
+import SignoutItem from "./SignoutItem";
 
 const Navbar = () => {
-  const { data: session } = useSession();
   return (
     <Menubar>
       <Link href="/">
@@ -33,30 +25,22 @@ const Navbar = () => {
       </Link>
       <SearchBar />
       <div className="flex flex-row">
-        {session ? (
-          <></>
-        ) : (
-          <MenubarMenu>
-            <MenubarTrigger>Sign In</MenubarTrigger>
-          </MenubarMenu>
-        )}
+        <SignInMenuTrigger />
         <MenubarMenu>
           <MenubarTrigger>Account</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>Your Orders</MenubarItem>
-            {session ? (
-              <MenubarItem>
-                <button onClick={() => signOut()}>Sign Out</button>
-              </MenubarItem>
-            ) : (
-              <></>
-            )}
+            <Link href="/orders">
+              <MenubarItem>Your Orders</MenubarItem>
+            </Link>
+            <SignoutItem />
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger>
-            <FaShoppingCart /> Cart
-          </MenubarTrigger>
+          <Link href="/cart">
+            <MenubarTrigger>
+              <FaShoppingCart /> Cart
+            </MenubarTrigger>
+          </Link>
         </MenubarMenu>
       </div>
     </Menubar>
