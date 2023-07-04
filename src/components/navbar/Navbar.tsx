@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import {
   Menubar,
@@ -25,6 +24,11 @@ const Navbar = () => {
       </Link>
       <SearchBar />
       <div className="flex flex-row">
+        <Link href="/">
+          <MenubarMenu>
+            <MenubarTrigger>Home</MenubarTrigger>
+          </MenubarMenu>
+        </Link>
         <SignInMenuTrigger />
         <MenubarMenu>
           <MenubarTrigger>Account</MenubarTrigger>

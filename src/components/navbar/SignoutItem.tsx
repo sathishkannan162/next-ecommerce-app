@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { MenubarItem } from "@/components/ui/menubar"
 import { signOut, useSession } from "next-auth/react";
