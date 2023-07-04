@@ -1,49 +1,45 @@
-import { options } from "@/lib/auth";
+import { options, UserWithCartandId } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-async function addProductToCart(userEmail: string, productId: number) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: userEmail,
+async function addProductToCart(cartId: string, productId: number) {
+  // Retrieve the cart and product from the database
+  // TODO: change this.
+  // Create a new entry in the `ProductsOnCart` table
+  // const checkProductOnCart = await prisma.productsOnCart.findUnique({
+  //   where: {
+  //     cartId_productId: {
+  //       cartId: cartId,
+  //       productId: productId,
+  //     },
+  //   },
+  // });
+  // if (checkProductOnCart) {
+  //   return false;
+  // }
+
+  const newProductOnCart = await prisma.productsOnCart.create({
+    data: {
+      cart: { connect: { id: cartId } },
+      product: { connect: { id: productId } },
     },
   });
-  if (!user) {
-    throw new Error("user authenticated but not in database");
-  } else {
-    let cart = await prisma.cart.findUnique({
-      where: {
-        userId: user.id,
-      },
-    });
-    if (!cart) {
-      cart = await prisma.cart.create({
-        data: {
-          userId: user.id,
-        },
-      });
-    }
-    // Retrieve the cart and product from the database
-    // TODO: change this.
-    // Create a new entry in the `ProductsOnCart` table
-    const newProductOnCart = await prisma.productsOnCart.create({
-      data: {
-        cart: { connect: { id: cart.id } },
-        product: { connect: { id: productId } },
-      },
-    });
 
-    console.log(`Product with ID ${productId} added to cart ${cart.id}`);
-    console.log("Updated cart:", cart.id);
-    console.log("Updated product:", productId);
-    console.log("Updated products on cart:", newProductOnCart);
-  }
+  console.log(`Product with ID ${productId} added to cart ${cartId}`);
+  console.log("Updated cart:", cartId);
+  console.log("Updated product:", productId);
+  console.log("Updated products on cart:", newProductOnCart);
+}
+
+export interface ApiBody {
+  productId: number;
 }
 
 export async function POST(req: Request) {
   const session = await getServerSession(options);
-  let { productId } = await req.json();
+  let { productId }: ApiBody = await req.json();
+
   if (
     session === null ||
     session === undefined ||
@@ -54,7 +50,8 @@ export async function POST(req: Request) {
       message: "user not signed in or email not present",
     });
   }
-  addProductToCart(session.user.email, productId);
+  const userWithCartAndId = session.user as UserWithCartandId;
+  await addProductToCart(userWithCartAndId.cartId, productId);
 
   return NextResponse.json({
     message: `Product with ID ${productId} added to cart of ${session.user.name}`,

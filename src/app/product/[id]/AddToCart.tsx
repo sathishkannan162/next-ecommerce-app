@@ -17,10 +17,9 @@ export default function AddToCart({
     if (!response.ok) {
       alert("server error: not added to cart");
       setInCart(() => false);
+    } else {
+      alert("added");
     }
-    else {
-        alert('added')
-      }
   };
 
   return (
